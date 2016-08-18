@@ -90,6 +90,7 @@ export class PackageInfo {
             schemas: schemas,
             name: packageJson.name,
             translators: translators,
+            onboardingInfo: [],
             version: packageJson.version,
         };
     }
@@ -127,6 +128,8 @@ export class PackageInfo {
      * Array of information about OpenT2T translator modules in the package.
      */
     public readonly translators: PackageTranslatorInfo[];
+
+    public readonly onboardingInfo: PackageOnboardingInfo[];
 }
 
 /**
@@ -181,3 +184,25 @@ export class PackageTranslatorInfo {
      */
     public readonly onboardingProperties: { [propertyName: string]: string };
 }
+
+export class PackageOnboardingInfo
+{
+    public readonly onboardingId: string;
+    public readonly schemas: string[];
+    public readonly onboardFlow: OnboardingFlow[];
+}
+
+export class OnboardingFlow
+{
+    public readonly name: string;
+    public readonly flow: OnboardingFlowElement[];
+}
+
+export class OnboardingFlowElement
+{
+    public readonly type: string;
+    public readonly name: string;
+    // Localized descriptions, with language (en-us, fr being the key)
+    public readonly descriptions: { [locale: string]: string };
+}
+

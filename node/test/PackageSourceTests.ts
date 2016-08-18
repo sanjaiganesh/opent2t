@@ -17,6 +17,40 @@ const testSchemaB = "org.opent2t.test.schemas.b";
 const testTranslatorOne = "org.opent2t.test.translators.one";
 const testTranslatorTwo = "org.opent2t.test.translators.two";
 
+const testOnboardingPackageOne = "opent2t-onboarding-org-opent2t-test-onboarding-one";
+const testOnboardingOnboardingOne = "org.opent2t.test.onboarding.one";
+const testOnboardingSchemaOne = "org.opent2t.test.onboarding.one";
+
+
+test("Get onboarding One info", async t => {
+    let packageInfo: PackageInfo | null = await testPackageSource.getPackageInfoAsync(testOnboardingPackageOne);
+    t.is(typeof packageInfo, "object");
+    t.not(packageInfo, null);
+    if (packageInfo) {
+        t.is(packageInfo.name, testOnboardingPackageOne);
+        t.is(typeof packageInfo.version, "string");
+        t.true(packageInfo.version.indexOf(".") > 0);
+        t.is(typeof packageInfo.description, "string");
+
+        t.true(Array.isArray(packageInfo.schemas));
+        t.is(packageInfo.schemas.length, 1);
+        t.is(typeof packageInfo.schemas[0], "object");
+        t.is(packageInfo.schemas[0].moduleName, testOnboardingPackageOne + "/" + testOnboardingSchemaOne);
+
+        t.true(Array.isArray(packageInfo.translators));
+        t.is(packageInfo.translators.length, 0);
+
+        t.true(Array.isArray(packageInfo.onboardingInfo));
+        t.is(packageInfo.onboardingInfo.length, 1);
+        t.is(typeof packageInfo.onboardingInfo[0], "object");
+        t.is(packageInfo.onboardingInfo[0].onboardingId, testOnboardingOnboardingOne);
+        t.true(Array.isArray(packageInfo.onboardingInfo[0].schemas));
+        t.is(packageInfo.onboardingInfo[0].schemas.length, 1);
+        t.is(packageInfo.onboardingInfo[0].schemas[0],
+            testOnboardingPackageOne + "/" + testOnboardingSchemaOne);
+    }
+});
+
 test("Get package A info", async t => {
     let packageInfo: PackageInfo | null = await testPackageSource.getPackageInfoAsync(testPackageOne);
     t.is(typeof packageInfo, "object");

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest>
+  <schemas>
+    <schema id="org.opent2t.test.onboarding.one" />
+  </schemas>
+  <onboarding id="org.opent2t.test.onboarding.one">
+    <onboardflow name="getUserInput">
+      <flow type ="input">
+        <name>username</name>
+        <description language ="en-US">Type in your Wink username </description>
+        <description language ="fr-fr">Entrez for nom pour Wink </description>
+      </flow>
+      <flow type ="password">
+        <name>password</name>
+        <description language="en-us">Type in your Wink password </description>
+        <description language="fr-fr">Entrez for password pour Wink </description>
+      </flow>
+    </onboardflow>
+    <onboardflow name="getDeveloperInput">
+      <flow type ="input">
+        <name>client_id</name>
+        <description language="en-us"> Ask for Client ID </description>
+        <description language="fr-fr"> Demandez Client ID </description>
+      </flow>
+      <flow type ="input">
+        <name>client_secret</name>
+        <description language="en-us"> Ask for Client Secret </description>
+        <description language="fr-fr"> Demandez Client Secret </description>
+      </flow>
+    </onboardflow>
+  </onboarding>
+</manifest>

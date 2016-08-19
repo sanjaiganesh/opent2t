@@ -52,13 +52,16 @@ export class LocalPackageSource extends PackageSource {
                 packageJson.opent2t.translators[translatorInfo.moduleName] = {
                     description: translatorInfo.description,
                     onboarding: translatorInfo.onboarding,
+                    onboardingFlow: translatorInfo.onboardingFlow,
                     onboardingProperties: translatorInfo.onboardingProperties,
                     schemas: translatorInfo.schemas,
                 };
             });
         }
 
-        // TODO: Merge onboarding info.
+        if (packageInfo.onboardingInfo) {
+            packageJson.opent2t.onboardingInfo.schemas = packageInfo.onboardingInfo.schemas;
+        }
     }
 
     /**

@@ -209,14 +209,14 @@ export class PackageTranslatorInfo {
 export class PackageOnboardingInfo
 {
     /**
-     * Relative path and name of the translator module within the package. This is not a
+     * Relative path and name of the onboarding module within the package. This is not a
      * fully-qualified name; a package name prefix is normally required to resolve the
      * module.
      */
     public readonly moduleName: string;
 
     /**
-     * List of references to schemas implemented by the translator.
+     * List of references to schemas implemented by the onboarding.
      * These are package-qualified schema module names.
      */
     public readonly schemas: string[];

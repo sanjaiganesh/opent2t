@@ -308,7 +308,7 @@ export class LocalPackageSource extends PackageSource {
                 // from the onboarding id.
                 let onboardingPackageName: string =
                         LocalPackageSource.derivePackageName(onboardingId, "onboarding");
-                onboardingModulePath = onboardingPackageName + "/" + onboardingId + "/thingOnboarding";
+                onboardingModulePath = onboardingPackageName + "/" + onboardingId + "/js/thingOnboarding";
 
                 if (Array.isArray(onboardingElement.arg)) {
                     onboardingElement.arg.forEach((argElement: any) => {
@@ -399,7 +399,7 @@ export class LocalPackageSource extends PackageSource {
                 if (schemaId) {
                     // By convention the schema module file and its parent directory
                     // both match the name of the schema.
-                    let schemaModulePath: string = packageJson.name + "/" + schemaId;
+                    let schemaModulePath: string = packageJson.name + "/" + schemaId + "/" + schemaId;
                     schemaModulePaths.push(schemaModulePath);
                     schemaInfos.push({
                         moduleName: schemaModulePath

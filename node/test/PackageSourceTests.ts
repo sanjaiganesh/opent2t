@@ -26,7 +26,7 @@ const testTranslatorTwo = "org.opent2t.test.translators.two";
  *        schemas: [ { moduleName: 'org.opent2t.test.schemas.a/org.opent2t.test.schemas.a' } ],
  *        translators: 
  *        [ { moduleName: 'org.opent2t.test.schemas.a/org.opent2t.test.translators.one/js/thingTranslator',
- *            onboarding: 'opent2t-onboarding-org-opent2t-test-onboarding/org.opent2t.test.onboarding/thingOnboarding',
+ *            onboarding: 'opent2t-onboarding-org-opent2t-test-onboarding/org.opent2t.test.onboarding/js/thingOnboarding',
  *            onboardingProperties: { prop1: 'value1', prop2: 'value2' },
  *            schemas: [ 'opent2t-translator-org-opent2t-test-translators-one/org.opent2t.test.schemas.a/org.opent2t.test.schemas.a' ] } ],
  *        onboardingFlow: [],

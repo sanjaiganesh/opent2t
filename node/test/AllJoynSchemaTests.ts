@@ -1,4 +1,4 @@
-// Tests for the AllJoynConverter class
+// Tests for the AllJoynSchemaReader and AllJoynSchemaWriter classes
 // using AVA test runner from https://github.com/avajs/ava
 
 import * as path from "path";
@@ -139,8 +139,8 @@ test("AllJoyn type <-> JSON schema: a{s(i(ss))}", t => {
     });
 });
 
-test("AllJoyn schema <-> ThingSchema: A", t => {
-    let thingSchema: ThingSchema = requireTest(
+test("AllJoyn schema <-> ThingSchema: A", async t => {
+    let thingSchema: ThingSchema = await requireTest(
             "./org.opent2t.test.schemas.a/org.opent2t.test.schemas.a");
 
     t.is(typeof thingSchema, "object");

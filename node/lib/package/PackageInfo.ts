@@ -79,6 +79,7 @@ export class PackageInfo {
                     description: translatorsJson[moduleName].description,
                     moduleName: moduleName,
                     onboarding: onboardingReference,
+                    onboardingFlow: [],
                     onboardingProperties: onboardingProperties,
                     schemas: schemaReferences,
                 });
@@ -88,9 +89,9 @@ export class PackageInfo {
         return {
             description: packageJson.description,
             name: packageJson.name,
+            onboardingInfo: null,
             schemas: schemas,
             translators: translators,
-            onboardingInfo: [],
             version: packageJson.version,
         };
     }
@@ -129,7 +130,11 @@ export class PackageInfo {
      */
     public readonly translators: PackageTranslatorInfo[];
 
-    public readonly onboardingInfo: PackageOnboardingInfo[];
+    /**
+     * Information about Onboarding package. (not applicable to translators or hub packages).
+     */
+    public readonly onboardingInfo: PackageOnboardingInfo | null;
+
 }
 
 /**
@@ -181,15 +186,26 @@ export class PackageTranslatorInfo {
     /**
      * Dictionary of properties passed to the onboarding module. For example, a property
      * may specify a filter for the kind of thing that is to be onboarded.
+     * This is optional and present only on actual devices.
      */
     public readonly onboardingProperties: { [propertyName: string]: string };
+
+
+    /**
+     * Onboarding information pertaining to the hub device, which will have the onboardign flow information. 
+     * For example, an 'input' flow type for acquiring username/client_id/client_secret
+     * This is optional and present only on hub devices.
+     */
+    public readonly onboardingFlow: OnboardingFlow[];
 }
 
 export class PackageOnboardingInfo
 {
-    public readonly onboardingId: string;
+    /**
+     * List of references to schemas implemented by the translator.
+     * These are package-qualified schema module names.
+     */
     public readonly schemas: string[];
-    public readonly onboardFlow: OnboardingFlow[];
 }
 
 export class OnboardingFlow

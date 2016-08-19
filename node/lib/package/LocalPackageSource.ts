@@ -224,11 +224,11 @@ export class LocalPackageSource extends PackageSource {
         return {
             description: packageJson.description,
             name: packageJson.name,
+            onboardingInfo: null,
             schemas: [{
                 moduleName: schemaModulePath,
             }],
             translators: [],
-            onboardingInfo: [],
             version: packageJson.version,
         };
     }
@@ -294,6 +294,7 @@ export class LocalPackageSource extends PackageSource {
         // Parse onboarding info from the manifest.
         let onboardingModulePath: string = "";
         let onboardingProperties: any = {};
+        let onboardingFlowElements: any[] = [];
         if (Array.isArray(manifestXmlRoot.onboarding) &&
                 manifestXmlRoot.onboarding.length === 1) {
             let onboardingElement = manifestXmlRoot.onboarding[0];
@@ -304,6 +305,7 @@ export class LocalPackageSource extends PackageSource {
                 let onboardingPackageName: string =
                         LocalPackageSource.derivePackageName(onboardingId, "onboarding");
                 onboardingModulePath = onboardingPackageName + "/" + onboardingId;
+
                 if (Array.isArray(onboardingElement.arg)) {
                     onboardingElement.arg.forEach((argElement: any) => {
                         let argName: string = argElement.$.name;
@@ -313,20 +315,45 @@ export class LocalPackageSource extends PackageSource {
                         }
                     });
                 }
+
+                if (Array.isArray(onboardingElement.onboardflow)) {
+                    onboardingElement.onboardflow.forEach((onboardFlowElement: any) => {
+                        let flowElements: any[] = [];
+                        let onboardFlowName: string = onboardFlowElement.$.name;
+                        if (Array.isArray(onboardFlowElement.flow)) {
+                            onboardFlowElement.flow.forEach((flowElement: any) => {
+                                let descriptionProperties: any = {};
+                                flowElement.description.forEach((descriptionElement: any) => {
+                                    descriptionProperties[descriptionElement.$.language] = descriptionElement._;
+                                }); // <description>
+                                flowElements.push({
+                                    descriptions: descriptionProperties,
+                                    name: flowElement.arg[0].$.name,
+                                    type: flowElement.$.type,
+                                });
+                            }); // <flow>
+                        }
+                        onboardingFlowElements.push({
+                            flow: flowElements,
+                            name: onboardFlowName,
+                        });
+                    }); // <onboardflow>
+                }
             }
         }
 
         return {
             description: packageJson.description,
             name: packageJson.name,
+            onboardingInfo: null,
             schemas: schemaInfos,
             translators: [{
                 moduleName: translatorModulePath,
                 onboarding: onboardingModulePath,
+                onboardingFlow: onboardingFlowElements,
                 onboardingProperties: onboardingProperties,
                 schemas: schemaModulePaths,
             }],
-            onboardingInfo: [],
             version: packageJson.version,
         };
     }
@@ -334,11 +361,9 @@ export class LocalPackageSource extends PackageSource {
     private async loadOnboardingPackageInfoAsync(
         onboardingName: string): Promise<PackageInfo | null> {
 
-        // By convention there are manifest.xml and package.json files under 'node'' directory. 
-        // under a directory with the translator name, under the schema directory.
-        // And there should be manifest.xml and package.json files alongside it.
-        let onboardingManifestPath = onboardingName + "/node/manifest.xml";
-        let onboardinPackageJsonPath = onboardingName + "/node/package.json";
+        // By convention there is package.json files under 'js' directory. 
+       let onboardingManifestPath = onboardingName + "/js/manifest.xml";
+        let onboardinPackageJsonPath = onboardingName + "/js/package.json";
 
         if (!(await fs.exists(path.join(this.sourceDirectory, onboardingManifestPath))) ||
             !(await fs.exists(path.join(this.sourceDirectory, onboardinPackageJsonPath)))) {
@@ -369,7 +394,7 @@ export class LocalPackageSource extends PackageSource {
                     // By convention the schema module file and its parent directory
                     // both match the name of the schema.
                     let schemaModulePath: string = packageJson.name + "/" + schemaId;
-                    schemaModulePaths.push(schemaModulePath); //TODO: validate this
+                    schemaModulePaths.push(schemaModulePath);
                     schemaInfos.push({
                         moduleName: schemaModulePath
                     });
@@ -377,59 +402,12 @@ export class LocalPackageSource extends PackageSource {
             });
         }
 
-        // TODO: if we are getting rid of <arg> it should reflect in transalator parsing as well.
-        // Parse onboarding info from the manifest.
-        let onboardingModulePath: string = "";
-        let onboardingInfo: any[] = [];
-        let onboardingFlowElements: any[] = [];
-        if (Array.isArray(manifestXmlRoot.onboarding) &&
-                manifestXmlRoot.onboarding.length == 1) {
-            let onboardingElement: any = manifestXmlRoot.onboarding[0];
-            let onboardingId:string = onboardingElement.$.id;
-            if (onboardingId) {
-                // By convention the onboarding module is in a package whose name is derived
-                // from the onboarding id.
-                let onboardingPackageName: string =
-                        LocalPackageSource.derivePackageName(onboardingId, "onboarding"); // TODO check this
-                onboardingModulePath = onboardingPackageName + "/" + onboardingId + "/" + onboardingId;
-                
-                 if (Array.isArray(onboardingElement.onboardflow)) {
-                    onboardingElement.onboardflow.forEach((onboardFlowElement: any) => {
-                        let flowElements: any[] = [];
-                        let onboardFlowName: string = onboardFlowElement.$.name;
-                        
-                        if(Array.isArray(onboardFlowElement.flow)){
-                            onboardFlowElement.flow.forEach((flowElement: any) => {
-                                let descriptionProperties: any = {};
-                                flowElement.description.forEach((descriptionElement: any) => {
-                                    descriptionProperties[descriptionElement.$.language] = descriptionElement._;
-                                }); // <description>
-                                flowElements.push({
-                                    type: flowElement.$.type,
-                                    name: flowElement.name[0],
-                                    descriptions: descriptionProperties
-                                });
-                            }); // <flow>
-                        }
-                        onboardingFlowElements.push({
-                            name: onboardFlowName,
-                            flow: flowElements
-                        });
-                    }); // <onboardflow>
-                }
-            }
-            onboardingInfo.push({
-                onboardingId : onboardingId,
-                schemas: schemaModulePaths,
-                onboardFlow: onboardingFlowElements
-            });
-        }
         return {
             description: packageJson.description,
             name: packageJson.name,
+            onboardingInfo: { schemas: schemaModulePaths },
             schemas: schemaInfos,
             translators: [],
-            onboardingInfo: onboardingInfo,
             version: packageJson.version,
         };
     }

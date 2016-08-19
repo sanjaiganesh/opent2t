@@ -60,6 +60,7 @@ export class LocalPackageSource extends PackageSource {
         }
 
         if (packageInfo.onboardingInfo) {
+            packageJson.opent2t.onboardingInfo.moduleName = packageInfo.onboardingInfo.moduleName;
             packageJson.opent2t.onboardingInfo.schemas = packageInfo.onboardingInfo.schemas;
         }
     }
@@ -307,7 +308,7 @@ export class LocalPackageSource extends PackageSource {
                 // from the onboarding id.
                 let onboardingPackageName: string =
                         LocalPackageSource.derivePackageName(onboardingId, "onboarding");
-                onboardingModulePath = onboardingPackageName + "/" + onboardingId;
+                onboardingModulePath = onboardingPackageName + "/" + onboardingId + "/thingOnboarding";
 
                 if (Array.isArray(onboardingElement.arg)) {
                     onboardingElement.arg.forEach((argElement: any) => {
@@ -365,12 +366,14 @@ export class LocalPackageSource extends PackageSource {
         onboardingName: string): Promise<PackageInfo | null> {
 
         // By convention there is package.json files under 'js' directory. 
-       let onboardingManifestPath = onboardingName + "/js/manifest.xml";
+        let onboardingManifestPath = onboardingName + "/js/manifest.xml";
         let onboardinPackageJsonPath = onboardingName + "/js/package.json";
+        let translatorModulePath = onboardingName + "/js/thingOnboarding";
 
-        if (!(await fs.exists(path.join(this.sourceDirectory, onboardingManifestPath))) ||
+        if (!(await fs.exists(path.join(this.sourceDirectory, translatorModulePath + ".js"))) ||
+            !(await fs.exists(path.join(this.sourceDirectory, onboardingManifestPath))) ||
             !(await fs.exists(path.join(this.sourceDirectory, onboardinPackageJsonPath)))) {
-            // The requested translator package was not found.
+            // The requested onboarding package was not found.
             return null;
         }
 
@@ -408,7 +411,9 @@ export class LocalPackageSource extends PackageSource {
         return {
             description: packageJson.description,
             name: packageJson.name,
-            onboardingInfo: { schemas: schemaModulePaths },
+            onboardingInfo: {
+                moduleName: translatorModulePath,
+                schemas: schemaModulePaths },
             schemas: schemaInfos,
             translators: [],
             version: packageJson.version,

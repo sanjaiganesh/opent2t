@@ -26,7 +26,7 @@ const testTranslatorTwo = "org.opent2t.test.translators.two";
  *        schemas: [ { moduleName: 'org.opent2t.test.schemas.a/org.opent2t.test.schemas.a' } ],
  *        translators: 
  *        [ { moduleName: 'org.opent2t.test.schemas.a/org.opent2t.test.translators.one/js/thingTranslator',
- *            onboarding: 'opent2t-onboarding-org-opent2t-test-onboarding/org.opent2t.test.onboarding',
+ *            onboarding: 'opent2t-onboarding-org-opent2t-test-onboarding/org.opent2t.test.onboarding/thingOnboarding',
  *            onboardingProperties: { prop1: 'value1', prop2: 'value2' },
  *            schemas: [ 'opent2t-translator-org-opent2t-test-translators-one/org.opent2t.test.schemas.a/org.opent2t.test.schemas.a' ] } ],
  *        onboardingFlow: [],
@@ -158,7 +158,10 @@ let testOnboardingPackageSource = PackageSource.createLocalPackageSource(path.jo
 /** PackageInfo structure for below test.
  * { description: 'Test onboarding one',
  *  name: 'opent2t-onboarding-org-opent2t-test-onboarding-one',
- *  onboardingInfo: { schemas: [ 'opent2t-onboarding-org-opent2t-test-onboarding-one/org.opent2t.test.onboarding.one' ] },
+ *  onboardingInfo: { 
+ *                      moduleName: 'org.opent2t.test.onboarding.one/js/thingOnboarding',
+ *                      schemas: [ 'opent2t-onboarding-org-opent2t-test-onboarding-one/org.opent2t.test.onboarding.one' ] 
+ *                  },
  *  schemas: [ { moduleName: 'opent2t-onboarding-org-opent2t-test-onboarding-one/org.opent2t.test.onboarding.one' } ],
  *  translators: [],
  *  version: '1.0.0' }

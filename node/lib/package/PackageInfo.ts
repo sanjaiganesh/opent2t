@@ -75,11 +75,18 @@ export class PackageInfo {
                             JSON.stringify(onboardingProperties));
                 }
 
+                let onboardingFlow: OnboardingFlow[] =
+                        translatorsJson[moduleName].onboardingFlow;
+                if (!onboardingFlow || typeof onboardingFlow !== "object") {
+                    throw new Error("Missing or invalid translator onboardingFlow information: " +
+                            JSON.stringify(onboardingFlow));
+                }
+
                 translators.push({
                     description: translatorsJson[moduleName].description,
                     moduleName: moduleName,
                     onboarding: onboardingReference,
-                    onboardingFlow: [],
+                    onboardingFlow: onboardingFlow,
                     onboardingProperties: onboardingProperties,
                     schemas: schemaReferences,
                 });
@@ -89,7 +96,7 @@ export class PackageInfo {
         return {
             description: packageJson.description,
             name: packageJson.name,
-            onboardingInfo: null,
+            onboardingInfo: packageJson.opent2t.onboardingInfo,
             schemas: schemas,
             translators: translators,
             version: packageJson.version,
@@ -186,13 +193,13 @@ export class PackageTranslatorInfo {
     /**
      * Dictionary of properties passed to the onboarding module. For example, a property
      * may specify a filter for the kind of thing that is to be onboarded.
-     * This is optional and present only on actual devices.
+     * This is optional and applicable only for devices that are connected through a hub.
      */
     public readonly onboardingProperties: { [propertyName: string]: string };
 
 
     /**
-     * Onboarding information pertaining to the hub device, which will have the onboardign flow information. 
+     * Onboarding information pertaining to the hub device, which will have the onboarding flow information. 
      * For example, an 'input' flow type for acquiring username/client_id/client_secret
      * This is optional and present only on hub devices.
      */
@@ -202,6 +209,13 @@ export class PackageTranslatorInfo {
 export class PackageOnboardingInfo
 {
     /**
+     * Relative path and name of the translator module within the package. This is not a
+     * fully-qualified name; a package name prefix is normally required to resolve the
+     * module.
+     */
+    public readonly moduleName: string;
+
+    /**
      * List of references to schemas implemented by the translator.
      * These are package-qualified schema module names.
      */
@@ -210,15 +224,33 @@ export class PackageOnboardingInfo
 
 export class OnboardingFlow
 {
+    /**
+     * Name of the onboarding flow method. Example: 'getUserInput'' to indicate input from the end-user.
+     */
     public readonly name: string;
+
+    /**
+     * Represents individual steps in a given flow (ex: get username, get password).
+     */
     public readonly flow: OnboardingFlowElement[];
 }
 
 export class OnboardingFlowElement
 {
+    /**
+     * Specifies type of the flow step (ex: input, password). Each type has specified meaning.
+     * For example, 'password' type indicates the UI to hide the text, when the user types.  
+     */
     public readonly type: string;
+
+    /**
+     * Friendly name of the flow step.
+     */
     public readonly name: string;
-    // Localized descriptions, with language (en-us, fr being the key)
+
+    /**
+     * Dictionary of localized descriptions of each flow step, with a language (say en, fr) being the key.
+     */
     public readonly descriptions: { [locale: string]: string };
 }
 

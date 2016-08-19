@@ -160,7 +160,7 @@ let testOnboardingPackageSource = PackageSource.createLocalPackageSource(path.jo
  *  name: 'opent2t-onboarding-org-opent2t-test-onboarding-one',
  *  onboardingInfo: { 
  *                      moduleName: 'org.opent2t.test.onboarding.one/js/thingOnboarding',
- *                      schemas: [ 'opent2t-onboarding-org-opent2t-test-onboarding-one/org.opent2t.test.onboarding.one' ] 
+ *                      schemas: [ 'opent2t-onboarding-org-opent2t-test-onboarding-one/org.opent2t.test.onboarding.one/org.opent2t.test.onboarding.one' ] 
  *                  },
  *  schemas: [ { moduleName: 'opent2t-onboarding-org-opent2t-test-onboarding-one/org.opent2t.test.onboarding.one' } ],
  *  translators: [],
